@@ -1,23 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import "./App.css";
+import axios from "axios";
 
 function App() {
+  const [advice, setAdvice] = useState("");
+
+  const getAdvice = async () => {
+    try {
+      const res = await axios("https://api.adviceslip.com/advice");
+      const { advice } = res.data.slip;
+      setAdvice(advice);
+    } catch (error) {
+      console.log("Error fetching advice:", error);
+    }
+  };
+
+  useEffect(() => {
+    getAdvice();
+    // const intervalId = setInterval(getAdvice, 100000);
+    // return () => clearInterval(intervalId);
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="wrapper">
+      <div className="container">
+        <p>{advice}</p>
+        <button onClick={() => getAdvice()}>Get Quote</button>
+      </div>
     </div>
   );
 }
